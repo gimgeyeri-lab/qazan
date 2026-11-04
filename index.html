@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kredit Ustası</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--ink:#17233f;--mute:#5d6883;--line:#d9deea;--acc:#0f7f83;--acc2:#e0a526;--bad:#c4402f;--ok:#1d8a4e;--okbg:#e3f5ea;--badbg:#fbe6e3;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10162a;--card:#1a2340;--ink:#eef1fa;--mute:#9aa6c6;--line:#2c3860;--acc:#38c3c7;--acc2:#f0b93a;--bad:#ff7a69;--ok:#5fd18d;--okbg:#17372b;--badbg:#44211f}}
+:root[data-theme="dark"]{--bg:#10162a;--card:#1a2340;--ink:#eef1fa;--mute:#9aa6c6;--line:#2c3860;--acc:#38c3c7;--acc2:#f0b93a;--bad:#ff7a69;--ok:#5fd18d;--okbg:#17372b;--badbg:#44211f}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:640px;margin:0 auto;padding:20px 16px 40px}
+h1,h2{font-family:Georgia,"Times New Roman",serif;margin:0}
+h1{font-size:2rem;line-height:1.15}h2{font-size:1.35rem;line-height:1.3}
+p{margin:.4rem 0}.mute{color:var(--mute);font-size:.92rem}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.btn{background:var(--acc);color:#fff;border:0;border-radius:10px;padding:12px 18px;font-weight:600}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn{color:#08222a}}
+:root[data-theme="dark"] .btn{color:#08222a}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.topics{display:grid;gap:10px;margin:18px 0}
+.t{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;width:100%}
+.t:hover{border-color:var(--acc)}.t b{font-weight:600}.t span{color:var(--mute);font-size:.9rem;white-space:nowrap}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+label.opt{display:flex;gap:8px;align-items:center;color:var(--mute);font-size:.92rem;margin:10px 0}
+.hud{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.92rem;margin-bottom:10px}
+.debt{letter-spacing:3px}.debt i{font-style:normal;opacity:.25}.debt i.on{opacity:1;color:var(--bad)}
+.gauge{height:14px;background:var(--line);border-radius:7px;overflow:hidden}
+.gauge div{height:100%;background:var(--acc2);width:0;transition:width .4s}
+.gl{display:flex;justify-content:space-between;font-size:.82rem;color:var(--mute);margin:4px 0 14px}
+.clock{height:5px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:16px}
+.clock div{height:100%;background:var(--acc);width:100%}
+.q{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:18px}
+.q h2{margin-bottom:14px}
+.a{display:flex;gap:10px;width:100%;text-align:left;background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:8px}
+.a:hover:not(:disabled){border-color:var(--acc)}.a kbd{font:600 .8rem system-ui;color:var(--mute);min-width:1.1em}
+.a.ok{background:var(--okbg);border-color:var(--ok)}.a.no{background:var(--badbg);border-color:var(--bad)}
+.fb{margin-top:14px;padding:12px 14px;border-radius:10px;background:var(--bg);border:1.5px solid var(--line)}
+.ex{margin:10px 0 12px;line-height:1.55}.credit{max-width:640px;margin:28px auto 0;padding:0 16px 16px;text-align:right;font-size:.75rem;color:var(--mute)}.fb strong.g{color:var(--ok)}.fb strong.r{color:var(--bad)}
+.big{font:700 3rem/1 Georgia,serif;color:var(--acc2)}
+.rev{margin-top:12px;padding:12px 14px;background:var(--card);border:1.5px solid var(--line);border-radius:10px}
+.rev p:first-child{font-weight:600}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<p class="credit">Hazırladı: R.Hacıyev</p>
+<script>
+const T=["Kredit və tədris ili","Yay semestri","İmtahan və akademik borc","Fərdi tədris planı","Ödəniş və təqaüd","Anlayışlar və xidmətlər"];
+// [mövzu, sual, düzgün, səhv, səhv, səhv, bənd]
+const Q=[
+[0,"Əyani formada tədris ili neçə həftədir?","40 həftə","32 həftə","36 həftə","44 həftə","3.2.2"],
+[0,"Semestr neçə həftədir, neçəsi imtahan sessiyasıdır?","20 həftə, 5-i imtahan","16 həftə, 1-i imtahan","20 həftə, 3-ü imtahan","18 həftə, 4-ü imtahan","3.2.2"],
+[0,"Fulltime tələbəyə semestrə neçə kredit verilir?","30","20","24","40","3.2.2"],
+[0,"Bir kredit neçə saatlıq işə bərabərdir?","30 saat","15 saat","25 saat","45 saat","3.2.2"],
+[0,"Tələbənin həftəlik ümumi yükü neçə saatdır?","45 saat","30 saat","36 saat","40 saat","3.2.2"],
+[0,"Tələbənin həftəlik işi neçə kreditdir?","1,5","1","2","2,5","3.2.2"],
+[0,"Qiyabi formada tədris ili və semestrin krediti nə qədərdir?","32 həftə, 24 kredit","40 həftə, 30 kredit","32 həftə, 30 kredit","36 həftə, 20 kredit","3.2.3"],
+[0,"Magistraturada normativ müddət 1,5 il olduqda kredit sayı neçədir?","90","60","120","240","3.2.4"],
+[1,"Yay semestri neçə həftədir?","6","4","8","10","3.4.2"],
+[1,"Yay semestrində kreditlərin cəmi nə qədərdən çox olmamalıdır?","10","6","15","20","3.4.3"],
+[1,"Hansı yay semestrinin məqsədi DEYİL?","İkinci ixtisas üzrə diplom almaq","Akademik borcları ləğv etmək","Humanitar seçmə fənlərin kreditlərini qazanmaq","Qiyməti yüksəltmək","3.4.1"],
+[1,"Yay semestri hansı əsaslarla keçirilir?","Könüllü və ödənişli","Məcburi və pulsuz","Məcburi və ödənişli","Könüllü və pulsuz","3.4.9"],
+[1,"Yay semestri imtahanlarla birlikdə nə vaxtadək bitməlidir?","Növbəti semestrə 2 həftə qalanadək","Növbəti semestrə 1 həftə qalanadək","Növbəti semestrə 1 ay qalanadək","Avqustun 1-dək","3.4.4"],
+[3,"Növbəti ilin fərdi planı nə vaxt təqdim edilir?","İyulun 5-dən 15-dək","Maydın 5-dən 15-dək","İyunun 1-dən 10-dək","Avqustun 1-dən 10-dək","3.3.1"],
+[3,"Payız semestrindən borclu qalan fərdi planında nə vaxt düzəliş edə bilər?","Qış tətilinin ilk həftəsi","Yaz semestrinin sonu","İstənilən vaxt","Heç vaxt","3.3.2"],
+[2,"Auditoriya saatlarının neçə faizindən çoxunu buraxan tələbə imtahana buraxılmır?","25 faiz","10 faiz","40 faiz","50 faiz","3.2.23"],
+[2,"İmtahana buraxılmayan tələbə fənni yay semestrində təkrar götürə bilər, əgər dərslərin neçə faizindən çoxunda iştirak edibsə?","50 faiz","25 faiz","75 faiz","İştirakdan asılı deyil","3.4.8"],
+[2,"Üzrlü səbəbdən imtahana gəlməyən tələbəyə hansı imkan verilir?","Növbəti semestrə qədər bir dəfə imtahan","İstənilən vaxt çox dəfə imtahan","Fənn avtomatik keçilir","Yalnız fənni yenidən dinləmək","3.2.14"],
+[2,"Akademik borclu tələbə semestrdə fənni dinləmədən neçə fənn üzrə imtahan verə bilər?","İki fənn","Bir fənn","Üç fənn","Limitsiz","3.2.14"],
+[2,"Təkrar imtahan haqqı fənn məbləğinin neçə faizindən çox ola bilməz?","25 faiz","10 faiz","50 faiz","100 faiz","3.2.14"],
+[4,"Kreditləri vaxtında yığa bilməyən tələbəyə nə olur?","Kontingentdə qalır, yalnız ödənişli oxuyur","Xaric edilir","Dövlət hesabına davam edir","Növbəti ilə köçürülmür","4.3"],
+[4,"Kredit ödənişi hesablanarkən illik təhsil haqqı neçəyə bölünür?","60","30","40","20","4.3"],
+[4,"Normativ müddətdən sonra 3 ildə kreditləri yığmayan tələbə nəyi itirir?","Əsaslı dəyişən peşə fənləri üzrə əvvəlki kreditləri","Bütün kreditləri","Heç nəyi","Kontingentdəki yerini","3.2.15"],
+[4,"Cari semestrdə akademik borcu qalan tələbənin təqaüdü nə olur?","Növbəti semestrdə kəsilir, kreditlər qazanılanda bərpa olunur","Yarıya enir","Bütün təhsil boyu kəsilir","Dəyişmir","3.2.24"],
+[1,"Müvəffəq qiyməti yüksəltmək üçün tələbə nə etməlidir?","Yay semestrində fənni yenidən dinləyib imtahan verməli","Yenidən imtahan verməli","Rektora ərizə yazmalı","Mümkün deyil","3.4.7"],
+[4,"Əlavə fənn seçən fulltime tələbənin semestrdə kreditləri ən çox neçə ola bilər?","40","30","35","45","3.2.5"],
+[4,"Oxşar ixtisasda əlavə təhsil üçün fənn və kreditlərin ən azı neçə faizi eyni olmalıdır?","70","50","60","90","3.2.6"],
+[5,"Digər müəssisədə qazanılan kreditlər ixtisas kreditlərinin neçə faizindən çox olmamalıdır?","30 faiz","10 faiz","20 faiz","50 faiz","6.1"],
+[5,"Akademik mobillik sənədlərinə hansı DAXİL DEYİL?","Tibbi arayış","Akademik transkript","Tələbənin ərizəsi","Tədris razılığı","6.2"],
+[0,"Parttime tələbə üçün hansı doğrudur?","Hər semestrdə ən azı iki fənn, qrafiki tələbə planlaşdırır","Qrafiki müəssisə planlaşdırır","Yalnız yay semestrində oxuyur","Yalnız məsafədən oxuyur","2.1.19"],
+[5,"Qaydalar hansı ali məktəblərə şamil edilir?","Tabeliyindən və mülkiyyətindən asılı olmayaraq hamısına","Yalnız dövlət","Yalnız özəl","Yalnız Nazirliyə tabe olanlara","1.2"],
+[5,"Hansı kredit sisteminin xüsusiyyəti DEYİL?","Hamı üçün eyni dəyişməz plan","Fərdi tədris planı","Çoxballı qiymətləndirmə","Hər fənn üzrə ayrıca jurnal","1.3"],
+[5,"Kredit sistemində tədris qrupları necə formalaşır?","Hər semestrdə fənlər üzrə","İxtisaslar üzrə bir dəfə","Yaş qrupları üzrə","Kafedralar üzrə","1.3.6"],
+[5,"Təhsil müddəti nədən asılıdır?","Tələbənin nailiyyətindən","Yaşından","Haqqın məbləğindən","Müəssisənin qərarından","1.3.9"],
+[5,"Təhsil krediti nədir?","Fənnin mənimsənilməsinə ayrılan vaxtın ölçü vahidi","Tələbəyə verilən borc","İmtahan balı","Həftələrin sayı","2.1.1"],
+[5,"Akademik transkript nəyi əks etdirir?","Keçilən fənlər üzrə kreditləri və qiymətləri","Ödəniş qəbzlərini","Müəllimin planını","Tədris qrafikini","2.1.12"],
+[5,"Prerekvizit fənlər hansılardır?","Tədrisi ilk növbədə zəruri olan fənlər","Seçmə fənlər","Yay fənləri","Humanitar fənlər","2.1.11"],
+[5,"Akademik borclu tələbə kimdir?","Planındakı fənlərin ən azı birindən krediti qazanmayan","Haqq borcu olan","Dərsə gecikən","Əlavə fənn götürən","2.1.17"],
+[5,"AKTS nədir?","Avropa Kredit Transfer Sistemi","Akademik Kredit Təsdiq Standartı","Azərbaycan Kredit Tədris Sistemi","Avropa Keyfiyyət Təminat Sistemi","2.1.10"],
+[5,"Aralıq qiymətləndirmə nədir?","İmtahan zamanı bilik və bacarıqların qiymətləndirilməsi","Semestr boyu fəaliyyətin qiymətləndirilməsi","Yay semestrinin qiyməti","Buraxılış işinin müdafiəsi","2.1.21"],
+[0,"Tədris ili neçə semestrdən ibarətdir?","İki (payız, yaz) + könüllü yay semestri","Üç məcburi semestr","İki, yay semestri qadağandır","Dörd rüb","3.2.1"],
+[0,"Hansı tədris sənədi siyahıda YOXDUR?","Dekanlığın illik maliyyə hesabatı","İxtisasın tədris planı","Tələbənin fərdi planı","Müəllimin illik işçi planı","3.1.2"],
+[0,"Fənlər tədris planında neçə qrupa bölünür?","3","2","4","5","3.2.8"],
+[0,"Kredit müəyyənləşdirilən fəaliyyətə hansı DAXİL DEYİL?","İctimai tədbirlərdə könüllü iştirak","Təcrübə","Kurs işi","Auditoriya dərsləri","3.2.7"],
+[0,"Müvəffəqiyyətlə təhsil alan tələbə kimdir?","Planındakı bütün fənlər üzrə kreditləri qazanan","Təqaüd alan","Ən yüksək ÜOMG-li","Dövlət sifarişli","2.1.16"],
+[2,"Üzrlü səbəbdən imtahana gəlməyən fəndən kredit qazanmış sayılırmı?","Xeyr, akademik borc qalır","Bəli, avtomatik","Yalnız ÜOMG yüksəkdirsə","Yalnız 2-ci semestrdə","3.2.14"],
+[3,"Növbəti ilin planına ilk növbədə hansı fənlər daxil edilir?","Əvvəlki ildən borc qalan fənlər","Seçmə fənlər","Yeni fənlər","Humanitar fənlər","3.2.11"],
+[3,"Fərdi tədris planını kim tərtib edir?","Tələbənin özü (tyutorun köməyi ilə)","Dekan","Kafedra müdiri","Rektor","3.2.11"],
+[3,"Yeni qəbul olunan tələbə fərdi planı nə vaxtadək almalıdır?","Sentyabrın 10-dək","Avqustun 15-dək","Sentyabrın 30-dək","Oktyabrın 1-dək","3.3.1"],
+[3,"Planı vaxtında təqdim etməyən tələbə ilə nə olur?","Təhsili ixtisasın tədris qrafikinə uyğun təşkil edilir","Xaric edilir","Təhsili dayandırılır","Cərimə olunur","3.3.4"],
+[3,"Fənn üzrə tələbə sayı yığılmasa nə edilir?","İllik plana daxil edilmir, tələbələr planını dəyişir","Yenə tədris olunur","Yay semestrinə keçirilir","Ləğv edilib kredit verilir","3.3.3"],
+[0,"Sərbəst işin ən azı neçə faizi müəllim rəhbərliyi ilə dərsdənkənar vaxtda keçirilməlidir?","40","20","30","60","3.2.21"],
+[0,"Müəllimin tələbələrlə sərbəst işi nə sayılır?","Tədris-metodiki iş","Əlavə ödənişli iş","Könüllü fəaliyyət","Elmi-tədqiqat işi","3.2.21"],
+[0,"Sərbəst işin növünü və formasını kim müəyyən edir?","Fənni tədris edən müəllim","Rektor","Tələbə","Tyutor","3.2.22"],
+[1,"Yay semestrində üzrlü səbəblə imtahana gəlməyənlər üçün nə təşkil olunur?","Növbəti semestrə qədər bir dəfə imtahan","Növbəti ilin sonunda imtahan","İmtahan olmur","Növbəti yay semestrində imtahan","3.4.5"],
+[1,"Yay semestrinə müəllimlər necə cəlb olunur?","Könüllü, saathesabı + qrupdan əlavə ödəniş","Məcburi, sabit maaşla","Könüllü, ödənişsiz","Dekanın təyinatı ilə","3.4.12"],
+[1,"Yay semestri nə vaxt təşkil olunur?","Yaz semestrindən sonra, müəssisə müəyyən edir","Payızdan əvvəl, Nazirlik müəyyən edir","Yazın ortasında, dekan müəyyən edir","Qış tətilində, tələbələr müəyyən edir","3.4.2"],
+[5,"Tyutor necə təyin olunur?","Rektorun əmri ilə","Dekanın sərəncamı ilə","Səsvermə ilə","Nazirliyin əmri ilə","5.3"],
+[5,"Tyutorun vəzifəsinə hansı DAXİL DEYİL?","İmtahan qiymətlərini müəyyən etmək","Tələbələrin hüquqlarını qorumaq","Fərdi plan üçün məsləhət vermək","Yay semestrinin təşkilində iştirak","5.4"],
+[5,"Tələbənin müəllim seçmək hüququ varmı və seçənlərin sayını kim müəyyən edir?","Var, sayı müəssisə müəyyən edir","Var, limit yoxdur","Yoxdur, dekan təyin edir","Var, Nazirlik müəyyən edir","3.2.17"]
+];
+const E=[
+"Əyani formada tədris ili 40 həftədir (3.2.2). Qiyabi formada isə 32 həftədir (3.2.3).",
+"Hər semestr 20 həftədir və bunun 5 həftəsi imtahan sessiyasına ayrılır (3.2.2). Qiyabi formada semestr 16 həftədir, 1 həftəsi imtahan sessiyasıdır (3.2.3).",
+"Fulltime tələbəyə semestrə 30 kredit müəyyən edilir (3.2.2). Parttime tələbəyə 20-yə qədər, qiyabi təhsildə 24 kredit verilir.",
+"Bir kredit 30 saatlıq auditoriya və auditoriyadankənar işə bərabərdir (3.2.2).",
+"Həftəlik ümumi yük 45 saatdır (3.2.2). Bu, 1,5 krediti ifadə edir (45 ÷ 30).",
+"Həftəlik iş həcmi 1,5 kreditdir (3.2.2). Buraxılış işi, dissertasiya, imtahanlara hazırlıq və təcrübələrə ayrılmış həftə də 1,5 kredit sayılır.",
+"Qiyabi formada tədris ili 32 həftədir, hər semestr 16 həftədən ibarətdir və semestrə 24 kredit verilir (3.2.3).",
+"Normativ müddət 1,5 il olduqda 90, 2 il olduqda 120 kredit müəyyən edilir (3.2.4). Bakalavriatda 240–300, əsas (baza ali) tibb təhsilində 300–360 kredit toplanmalıdır.",
+"Yay semestri 6 həftədir. İmtahan müddəti 1 həftədən çox olmamaqla semestrin sonuncu həftəsində keçirilir (3.4.2).",
+"Yay semestrində götürülən fənlər üzrə kreditlərin cəmi 10-dan çox olmamalıdır (3.4.3).",
+"Yay semestri akademik borcların ləğvi, humanitar seçmə fənlərin kreditləri, qiymətin yüksəldilməsi və digər ali məktəblərin tələbələrinin kredit qazanması üçün təşkil olunur (3.4.1). İkinci ixtisas üzrə diplom bu məqsədlər arasında yoxdur.",
+"Yay semestri könüllülük prinsipi ilə ödənişli əsaslarla keçirilir. Bir kreditin ödənişi 4.3-cü bəndə uyğun müəyyən edilir (3.4.9, 3.4.10).",
+"Yay semestri və imtahanları növbəti semestrin başlanmasına 2 həftə qalanadək başa çatdırılmalıdır (3.4.4).",
+"Tələbələr növbəti ilin fərdi planını iyulun 5-dən 15-dək fakültəyə təqdim edir (3.3.1).",
+"Payız semestrindən akademik borcu qalanlar qış tətilinin ilk həftəsində növbəti semestr üçün fərdi planlarında düzəliş edə bilər. Digər tələbələrə bu imkan verilmir (3.3.2).",
+"Auditoriya saatlarının 25 faizindən çoxunda iştirak etməyən tələbə həmin fəndən imtahana buraxılmır. Bu hədd ali məktəb tərəfindən azaldıla bilər. Milli yığma komanda üzvü olan idmançılar istisnadır (3.2.23).",
+"İmtahana buraxılmayan tələbə dərslərin 50 faizindən çoxunda iştirak etmişsə, fənni yay semestrində təkrar götürə bilər (3.4.8).",
+"Üzrlü səbəblə imtahana gəlməyən tələbəyə növbəti semestrin dərsləri başlanana qədər bir dəfə imtahan vermək imkanı yaradılır və bunun üçün ödəniş tutulmur. Bu imkandan istifadə etməyən tələbə üzrsüz səbəbdən iştirak etməyən sayılır (3.2.14, 3.2.20).",
+"Akademik borcu olan tələbə hər semestrdə fənni dinləmədən ümumilikdə iki fənn üzrə (hər fəndən bir dəfə) imtahan verə bilər (3.2.14).",
+"Təkrar imtahan haqqı fənn üçün 4.3-cü bəndə uyğun müəyyən edilən məbləğin 25 faizindən çox ola bilməz (3.2.14).",
+"Kreditləri vaxtında yığa bilməyən tələbə xaric edilmir. O, kontingentdə saxlanılır və təhsilini yalnız ödənişli əsaslarla davam etdirir (4.3).",
+"Ödəniş məbləği illik təhsil haqqını 60-a bölərək alınan nəticəni tələbənin götürdüyü fənlərin kreditlərinə vurmaqla hesablanır (4.3). 60 rəqəmi bir ildəki 2 semestr × 30 krediti ifadə edir.",
+"Normativ müddətdən sonrakı 3 ildə kreditləri toplaya bilməyən tələbə yalnız məzmununda əsaslı dəyişikliklər edilən peşə hazırlığı fənlərindən əvvəl qazandığı kreditləri itirir və onları yenidən yığmalıdır (3.2.15).",
+"Cari semestrdə akademik borcu qalan tələbə növbəti semestrdə təqaüddən məhrum olur. Bütün fənlərdən kreditləri qazandıqda təqaüd növbəti semestrdən bərpa olunur (3.2.24).",
+"Müvəffəq qiyməti yüksəltmək üçün yenidən imtahan verməyə icazə yoxdur. Tələbə fənni yay semestrində yenidən götürüb dinləməklə imtahan verir. Məqsədinə nail olmasa, əvvəlki bal qüvvədə qalır (3.4.7).",
+"Bir semestrdə götürülən kreditlərin sayı bütün hallarda 40-dan çox olmamalıdır. Əlavə fənn ödənişlidir. Dövlət sifarişi ilə oxuyan və 81–100 bal toplayan tələbələr əlavə fənni ödənişsiz seçə bilər (3.2.5).",
+"Fənlərin və kreditlərin ən azı 70 faizi eyni olduqda tələbə ödənişli əsaslarla müvafiq ixtisasın fənlərini seçə bilər. Bu şərtlərlə əlavə təhsil alanlara həmin ixtisas üzrə bakalavr dərəcəsi və diplom verilir (3.2.6).",
+"Digər ali təhsil müəssisələrində qazanılacaq kreditlərin sayı ixtisas üzrə kreditlərin 30 faizindən çox olmamalıdır. Bu, tələbənin öz müəssisəsinin razılığı ilə həyata keçirilir (6.1).",
+"Akademik mobillik üçün akademik transkript, tələbənin ərizəsi, tədris razılığı və məlumat paketi tələb olunur (6.2). Tibbi arayış bu siyahıda yoxdur.",
+"Parttime formada ixtisasın tədris planına uyğun hər semestrdə iki fəndən az olmamaqla oxunur və tədris qrafikini tələbə özü planlaşdırır. Fulltime formada isə qrafiki ali məktəb planlaşdırır (2.1.18, 2.1.19).",
+"Qaydalar ali təhsil müəssisələrinin tabeliyindən, mülkiyyət növündən və təşkilati-hüquqi formasından asılı olmayaraq hamısına şamil edilir (1.2). Xarici ali məktəblərin filialları öz ölkələrinin tədris qaydalarını tətbiq edə bilər.",
+"Kredit sistemində hər tələbənin fərdi tədris planı olur, çoxballı qiymətləndirmə aparılır və hər fənn üzrə ayrıca jurnal tərtib edilir (1.3). Hamı üçün eyni dəyişməz plan bu sistemin xüsusiyyəti deyil.",
+"Kredit sisteminin xüsusiyyətlərindən biri tədris qruplarının hər semestrdə fənlər üzrə formalaşdırılmasıdır (1.3.6).",
+"Təhsilalma müddətinin tələbənin nailiyyətindən asılı olması kredit sisteminin xüsusiyyətlərindəndir (1.3.9). Xüsusi təyinatlı ali təhsil müəssisələri istisnadır.",
+"Təhsil krediti fənnin məzmununa və həcminə uyğun olaraq onun mənimsənilməsinə ayrılan vaxtın ölçü vahididir (2.1.1).",
+"Akademik transkript tələbənin keçdiyi fənlər üzrə topladığı kreditləri və qiymətləri (rəqəm və hərflərlə) əks etdirir (2.1.12). Tələbə onu təhsil müddətində istənilən vaxt ala bilər (4.5).",
+"Prerekvizit fənlər tədrisi ilk növbədə zəruri olan fənlərdir (2.1.11). Fərdi plan tərtib olunarkən prerekvizitliyə riayət edilməlidir (3.2.11).",
+"Akademik borclu tələbə fərdi planda qeyd olunan fənlərin ən azı birindən müəyyən olunmuş krediti qazana bilməyən tələbədir (2.1.17).",
+"AKTS Avropa Kredit Transfer Sistemidir. O, tələbənin iş yükünü və təhsilalma istiqamətini müəyyənləşdirir, mobilliyi təmin edir və proqramların dövlətlərarası müqayisəsini asanlaşdırır (2.1.10).",
+"Aralıq qiymətləndirmə imtahan zamanı tələbənin bilik və bacarıqlarının qiymətləndirilməsidir (2.1.21). Semestr boyu fəaliyyətin qiymətləndirilməsi isə cari qiymətləndirmədir (2.1.20).",
+"Tədris ili payız və yaz semestrlərindən ibarətdir. Yay tətili müddətində 6 həftədən çox olmayan yay semestri də təşkil oluna bilər (3.2.1).",
+"Tədris sənədləri ixtisasın tədris planı, tədris qrafiki, illik işçi tədris planı, tələbənin fərdi planı və müəllimin illik işçi planıdır (3.1.2). Dekanlığın maliyyə hesabatı bu siyahıda yoxdur.",
+"Fənlər üç qrupa bölünür: məcburi və ardıcıl öyrənilənlər, məcburi, lakin ardıcıllığı vacib olmayanlar və tələbənin seçimi ilə öyrənilənlər (3.2.8).",
+"Kreditlər auditoriya və auditoriyadankənar iş, təcrübə, laboratoriya, kurs işi, imtahanlara hazırlıq və imtahan, buraxılış işi və dövlət imtahanı üzrə müəyyənləşdirilir (3.2.7). İctimai tədbirlər bu siyahıda yoxdur.",
+"Müvəffəqiyyətlə təhsil alan tələbə fərdi planda qeyd olunan bütün fənlər üzrə müəyyən olunmuş kreditləri qazanan tələbədir (2.1.16).",
+"Üzrlü və ya üzrsüz səbəbdən imtahanda iştirak etməyən tələbə həmin fəndən kreditləri qazanmır və akademik borcu qalır. Üzrlü səbəb olduqda isə təkrar imtahan imkanı yaradılır (3.2.14).",
+"Növbəti ilin fərdi planına ilk növbədə əvvəlki ildən akademik borcu qalan fənlər daxil edilir. Fənn həmin semestrdə tədris olunmursa və ya qrup yaradılmırsa, bu tələb istisna edilir (3.2.11).",
+"Fərdi tədris planını tələbənin özü fənlərin prerekvizitliyini nəzərə almaqla tərtib edir. Bu zaman akademik məsləhətçinin (tyutorun) köməyindən də istifadə oluna bilər (3.2.11).",
+"Yeni qəbul olunan tələbələrə birinci tədris ili üçün fərdi plan fakültə tərəfindən hazırlanır və tələbə onu sentyabrın 10-dək almalıdır. Həmin tarixədək düzəlişlər də edə bilər (3.3.1).",
+"Plan təqdim edilmədikdə tələbənin təhsili həmin il üçün ixtisasın tədris qrafikinə uyğun təşkil edilir (3.3.4).",
+"Qrupda tələbə sayını fənnin xüsusiyyətindən və tədris formasından asılı olaraq müəssisə müəyyən edir. Say yığılmayan fənn illik işçi plana daxil edilmir və tələbələr planlarını müvafiq qaydada dəyişirlər (3.3.3).",
+"Sərbəst işin ən azı 40 faizi müəllimin rəhbərliyi ilə dərsdənkənar vaxtda həyata keçirilməlidir. Əyani formada bütün növ dərslərin 1 akademik saatına 1 saatdan az olmayaraq sərbəst iş müəyyən edilir (3.2.21).",
+"Müəllimin tələbələrlə sərbəst işi onun tədris-metodiki işi hesab edilir (3.2.21).",
+"Sərbəst işin növü və forması fənni tədris edən müəllim tərəfindən müəyyənləşdirilir (3.2.22).",
+"Yay semestrində üzrlü səbəbdən imtahanda iştirak etməyən tələbələr üçün növbəti semestrin başlanğıcına qədər bir dəfə imtahan təşkil olunur (3.4.5).",
+"Müəllimlər yay semestrinə könüllü cəlb olunurlar. Fəaliyyət saathesabı qaydada ödənilir, bundan əlavə fənn üzrə qrupdan əldə olunan vəsait hesabına əlavə ödəniş verilir. Məbləği müəssisə müəyyən edir (3.4.12).",
+"Yay semestri yaz semestri başa çatdıqdan sonra təşkil olunur və başlanma müddətini ali təhsil müəssisəsi müəyyən edir (3.4.2).",
+"Tyutor rektorun əmri ilə təyin olunur (5.3). Tyutorlar bu sahədə müəyyən təcrübəsi və səriştəsi olan ali təhsilli şəxslər arasından seçilir (5.2).",
+"Tyutor tələbələrin hüquq və akademik maraqlarını qoruyur, məlumat və sənədlər təqdim edir, fərdi planların tərtibinə məsləhət verir, yay semestrinin təşkilində iştirak edir (5.4). Qiymət müəyyən etmək onun vəzifəsi deyil.",
+"Tələbənin müəllim seçmək hüququ var. Bir müəllimi seçən tələbələrin sayını fənnin xüsusiyyətindən və tədrisin formasından asılı olaraq ali təhsil müəssisəsi müəyyən edir (3.2.17, 4.2-1)."
+];
+const $=s=>document.querySelector(s),app=$("#app");
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const LS={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let S,tm,tl,train=false;
+function menu(){
+ clearInterval(tm);
+ const best=bestPts();
+ app.innerHTML=nav()+`<h1>Kredit Ustası</h1>
+ <p class="mute">Kredit sistemi Qaydalarını oyunla öyrən. Hər düzgün cavab 1 kredit qazandırır, hər səhv cavab isə akademik borc yaradır. 3 borc yığsan sessiya bitir.</p>
+ ${best?`<p><b>Ən yüksək xal:</b> ${best}</p>`:""}
+ <label class="opt"><input type="checkbox" id="tr"> Təlim rejimi (vaxt və borc limiti yoxdur)</label>
+ <div class="topics">
+ <button class="t" data-t="-1" data-n="15"><b>Qarışıq oyun</b><span>15 sual</span></button>
+ <button class="t" data-t="-2" data-n="60"><b>Tam imtahan</b><span>60 sual</span></button>
+ ${T.map((n,i)=>`<button class="t" data-t="${i}" data-n="99"><b>${n}</b><span>${Q.filter(q=>q[0]==i).length} sual</span></button>`).join("")}
+ </div>`;
+ app.querySelectorAll(".t").forEach(b=>b.onclick=()=>start(+b.dataset.t,+b.dataset.n));
+}
+function start(t,n){
+ train=$("#tr").checked;
+ let p=Q.map((q,i)=>i).filter(i=>t<0||Q[i][0]==t);
+ p=shuf(p).slice(0,n);window.MODE=t==-1?"Qarışıq":t==-2?"Tam imtahan":T[t];
+ S={p,i:0,pts:0,cr:0,debt:0,st:0,bad:[],left:20,done:false};
+ ask();
+}
+function ask(){
+ if(S.i>=S.p.length||(!train&&S.debt>=3))return end();
+ const q=Q[S.p[S.i]];
+ S.o=shuf([2,3,4,5]).map(k=>({t:q[k],ok:k==2}));
+ S.left=20;S.done=false;
+ app.innerHTML=`<div class="hud"><span>Sual ${S.i+1} / ${S.p.length}</span><span class="debt" title="Akademik borc">${[0,1,2].map(i=>`<i class="${S.debt>i?"on":""}">●</i>`).join("")}</span><span><b>${S.pts}</b> xal</span></div>
+ <div class="gauge"><div style="width:${Math.min(100,S.cr/S.p.length*100)}%"></div></div>
+ <div class="gl"><span>${S.cr} kredit qazanılıb</span><span>${S.p.length} kredit hədəf</span></div>
+ ${train?"":`<div class="clock"><div id="ck"></div></div>`}
+ <div class="q"><h2>${q[1]}</h2>${S.o.map((o,i)=>`<button class="a" data-i="${i}"><kbd>${i+1}</kbd><span>${o.t}</span></button>`).join("")}<div id="fb"></div></div>`;
+ app.querySelectorAll(".a").forEach(b=>b.onclick=()=>pick(+b.dataset.i));
+ clearInterval(tm);
+ if(!train){tl=Date.now();tm=setInterval(()=>{S.left=Math.max(0,20-(Date.now()-tl)/1000);const c=$("#ck");if(c)c.style.width=S.left/20*100+"%";if(S.left<=0)pick(-1)},100)}
+}
+function pick(j){
+ if(S.done)return;S.done=true;clearInterval(tm);
+ const q=Q[S.p[S.i]],ok=j>=0&&S.o[j].ok;S.tp=S.tp||Array(12).fill(0);S.tp[q[0]*2+1]++;if(ok)S.tp[q[0]*2]++;
+ let msg;
+ if(ok){const b=train?0:Math.round(S.left/2),s=Math.min(S.st,5)*2;S.pts+=10+b+s;S.cr++;S.st++;msg=`<strong class="g">Düzgün.</strong> +${10+b+s} xal${S.st>1?`, ${S.st} ardıcıl cavab`:""}. <span class="mute">Bənd ${q[6]}</span>`}
+ else{S.debt++;S.st=0;S.bad.push(S.p[S.i]);msg=`<strong class="r">${j<0?"Vaxt bitdi.":"Səhv."}</strong> Düzgün cavab: ${q[2]}. <span class="mute">Bənd ${q[6]}</span>`}
+ app.querySelectorAll(".a").forEach((b,i)=>{b.disabled=true;if(S.o[i].ok)b.classList.add("ok");else if(i==j)b.classList.add("no")});
+ $("#fb").innerHTML=`<div class="fb"><p>${msg}</p><p class="ex"><b>İzah:</b> ${E[S.p[S.i]]}</p><button class="btn" id="nx">${S.i+1>=S.p.length?"Nəticəyə bax":"Növbəti sual"}</button></div>`;
+ $("#nx").onclick=()=>{S.i++;ask()};$("#nx").focus();
+}
+function end(){
+ clearInterval(tm);
+ const n=S.i,acc=n?Math.round(S.cr/n*100):0,stopped=!train&&S.debt>=3&&S.i<S.p.length;
+ const rank=acc>=90?"Kredit Ustası":acc>=70?"Təcrübəli tələbə":acc>=50?"Yaxşı başlanğıc":"Qaydaları təkrarlayın";
+ const rec=saveAttempt();
+ app.innerHTML=`<h2>${stopped?"Sessiya bitdi: 3 akademik borc":"Sessiya tamamlandı"}</h2>
+ <p class="big">${S.pts}</p><p class="mute">xal${rec?" — yeni şəxsi rekord!":""}</p>
+ <p><b>${rank}</b>. ${S.cr} düzgün cavab, ${n} sualdan ${acc} faiz.</p>
+ <div class="row" style="margin:14px 0"><button class="btn" id="again">Yenidən oyna</button>${S.bad.length?`<button class="btn ghost" id="rp">Səhvləri təkrarla</button>`:""}</div>
+ ${S.bad.length?`<h2 style="margin-top:20px">Səhv cavablanan suallar</h2>${S.bad.map(i=>`<div class="rev"><p>${Q[i][1]}</p><p>${Q[i][2]} <span class="mute">(bənd ${Q[i][6]})</span></p><p class="mute">${E[i]}</p></div>`).join("")}`:"<p>Heç bir səhv yoxdur.</p>"}`;
+ $("#again").onclick=menu;
+ const rp=$("#rp");if(rp)rp.onclick=()=>{const p=shuf(S.bad);S={p,i:0,pts:0,cr:0,debt:0,st:0,bad:[],left:20,done:false,rp:1};ask()};
+}
+document.addEventListener("keydown",e=>{
+ if(!S||S.done&&e.key!=="Enter")return;
+ const k=+e.key;if(k>=1&&k<=4&&app.querySelector(".a")&&!S.done)pick(k-1);
+});
+function bestPts(){return +LS.get("kum_best")||0}
+function nav(){return ""}
+function saveAttempt(){if(train||S.rp||!S.i)return false;const b=bestPts(),rec=b>0&&S.pts>b;if(S.pts>b)LS.set("kum_best",S.pts);return rec}
+menu();
+</script>
+</body>
+</html>
