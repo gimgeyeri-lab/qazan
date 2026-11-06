@@ -12,7 +12,7 @@
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 main{max-width:640px;margin:0 auto;padding:20px 16px 40px}
 h1,h2{font-family:Georgia,"Times New Roman",serif;margin:0}
-h1{font-size:2rem;line-height:1.15}h2{font-size:1.35rem;line-height:1.3}
+h1{font-size:1.5rem;line-height:1.3}h2{font-size:1.35rem;line-height:1.3}
 p{margin:.4rem 0}.mute{color:var(--mute);font-size:.92rem}
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
@@ -182,8 +182,8 @@ let S,tm,tl,train=false;
 function menu(){
  clearInterval(tm);
  const best=bestPts();
- app.innerHTML=nav()+`<h1>Kredit Ustası</h1>
- <p class="mute">Kredit sistemi Qaydalarını oyunla öyrən. Hər düzgün cavab 1 kredit qazandırır, hər səhv cavab isə akademik borc yaradır. 3 borc yığsan sessiya bitir.</p>
+ app.innerHTML=nav()+`<h1>Ali təhsil müəssisələrində kredit sistemi ilə tədrisin təşkili qaydalarını oyunla öyrən.</h1>
+ <p class="mute">Hər düzgün cavab kredit qazandırır, hər səhv cavab isə akademik borc yaradır. 3 borc yığsan sessiya bitir.</p>
  ${best?`<p><b>Ən yüksək xal:</b> ${best}</p>`:""}
  <label class="opt"><input type="checkbox" id="tr"> Təlim rejimi (vaxt və borc limiti yoxdur)</label>
  <div class="topics">
@@ -204,7 +204,7 @@ function ask(){
  if(S.i>=S.p.length||(!train&&S.debt>=3))return end();
  const q=Q[S.p[S.i]];
  S.o=shuf([2,3,4,5]).map(k=>({t:q[k],ok:k==2}));
- S.left=20;S.done=false;
+ S.left=60;S.done=false;
  app.innerHTML=`<div class="hud"><span>Sual ${S.i+1} / ${S.p.length}</span><span class="debt" title="Akademik borc">${[0,1,2].map(i=>`<i class="${S.debt>i?"on":""}">●</i>`).join("")}</span><span><b>${S.pts}</b> xal</span></div>
  <div class="gauge"><div style="width:${Math.min(100,S.cr/S.p.length*100)}%"></div></div>
  <div class="gl"><span>${S.cr} kredit qazanılıb</span><span>${S.p.length} kredit hədəf</span></div>
@@ -212,13 +212,13 @@ function ask(){
  <div class="q"><h2>${q[1]}</h2>${S.o.map((o,i)=>`<button class="a" data-i="${i}"><kbd>${i+1}</kbd><span>${o.t}</span></button>`).join("")}<div id="fb"></div></div>`;
  app.querySelectorAll(".a").forEach(b=>b.onclick=()=>pick(+b.dataset.i));
  clearInterval(tm);
- if(!train){tl=Date.now();tm=setInterval(()=>{S.left=Math.max(0,20-(Date.now()-tl)/1000);const c=$("#ck");if(c)c.style.width=S.left/20*100+"%";if(S.left<=0)pick(-1)},100)}
+ if(!train){tl=Date.now();tm=setInterval(()=>{S.left=Math.max(0,60-(Date.now()-tl)/1000);const c=$("#ck");if(c)c.style.width=S.left/60*100+"%";if(S.left<=0)pick(-1)},100)}
 }
 function pick(j){
  if(S.done)return;S.done=true;clearInterval(tm);
  const q=Q[S.p[S.i]],ok=j>=0&&S.o[j].ok;S.tp=S.tp||Array(12).fill(0);S.tp[q[0]*2+1]++;if(ok)S.tp[q[0]*2]++;
  let msg;
- if(ok){const b=train?0:Math.round(S.left/2),s=Math.min(S.st,5)*2;S.pts+=10+b+s;S.cr++;S.st++;msg=`<strong class="g">Düzgün.</strong> +${10+b+s} xal${S.st>1?`, ${S.st} ardıcıl cavab`:""}. <span class="mute">Bənd ${q[6]}</span>`}
+ if(ok){const b=train?0:Math.round(S.left/6),s=Math.min(S.st,5)*2;S.pts+=10+b+s;S.cr++;S.st++;msg=`<strong class="g">Düzgün.</strong> +${10+b+s} xal${S.st>1?`, ${S.st} ardıcıl cavab`:""}. <span class="mute">Bənd ${q[6]}</span>`}
  else{S.debt++;S.st=0;S.bad.push(S.p[S.i]);msg=`<strong class="r">${j<0?"Vaxt bitdi.":"Səhv."}</strong> Düzgün cavab: ${q[2]}. <span class="mute">Bənd ${q[6]}</span>`}
  app.querySelectorAll(".a").forEach((b,i)=>{b.disabled=true;if(S.o[i].ok)b.classList.add("ok");else if(i==j)b.classList.add("no")});
  $("#fb").innerHTML=`<div class="fb"><p>${msg}</p><p class="ex"><b>İzah:</b> ${E[S.p[S.i]]}</p><button class="btn" id="nx">${S.i+1>=S.p.length?"Nəticəyə bax":"Növbəti sual"}</button></div>`;
